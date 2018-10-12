@@ -25,8 +25,8 @@ def blog():
         query = Blog.query.get(id)
         return render_template('singlepost.html', post=query)
     else:
-        entry = Blog.query.all()    
-        return render_template('blog.html', blog=entry)
+        query = Blog.query.all()    
+        return render_template('blog.html', blog=query)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
