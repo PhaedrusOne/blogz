@@ -23,13 +23,13 @@ def blog():
     if request.args:
         id = request.args.get('id')
         query = Blog.query.get(id)
-        return render_template('singlepost.html', blogs=query)
+        return render_template('singlepost.html', post=query)
     else:
-        blogs = Blog.query.all()    
-        return render_template('blog.html', blogs=blogs)
+        entry = Blog.query.all()    
+        return render_template('blog.html', blog=entry)
 
 
-@app.route('/newpost', methods=['Post', 'GET'])
+@app.route('/newpost', methods=['POST', 'GET'])
 def new_post():
     if request.method == 'POST':
         title = request.form['title']
@@ -44,7 +44,7 @@ def new_post():
             new = Blog(title,body)
             db.session.add(new)
             db.session.commit()
-            return redirect('/blog?id='+ str(new.id))
+            return redirect('./blog?id='+ str(new.id))
     
         return render_template('newpost.html',title_error=title_error, body_error=body_error, title=title, body=body)
     else:
