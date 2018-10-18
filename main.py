@@ -34,32 +34,31 @@ class User(db.Model):
 
 @app.route('/login', methods=['POST','GET'])
 def login():
-    if request.methid == 'POST':
-        error = ''
+    if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         username_error = ''
         password_error= ''
-        verify_error=''
         user = User.query.filter_by(username=username).first()
         if not username:
-            user_error = 'User does not exist'
-        if not user.password:
+            username_error = 'Invalid Username'
+        if not password:
             password_error = 'Invalid Password'
-        if user.password != password:
-            verify_error = 'Password does not Match'
 
-        if user and user.password == password:
+        if not username_error and not password_error:
             session['username'] = username
             flash('Logged in')
             return redirect('/newpost')
         
-        return render_template('login.html', user_error=user_error, password_error=password_error)
+        return render_template('login.html', username_error=username_error, password_error=password_error)
     else:
         return render_template('login.html')
 
 
-
+@app.route("/", methods=['POST', 'GET']) 
+def index():
+    users= User.query.all()
+    return render_template('index.html', users=users)
 
 
 
