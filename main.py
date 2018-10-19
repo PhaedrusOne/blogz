@@ -7,6 +7,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:MyNewPass@localho
 app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
+app.secret_key = 'y337kGcys&zP3B'
+
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,12 +57,62 @@ def login():
         return render_template('login.html')
 
 
+@app.route('/signup', methods=['POST','GET'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        verify = request.form['verify']
+        username_val = ""  
+        password_val = ""  
+        verify_val = ""
+        username_dup = ""
+        existing_user = User.query.filter_by(username=username).first()
+
+        #error = False
+
+        if username == "":
+            username_val = "Empty field"
+        elif len(username) < 3 or len(username) > 20:
+            username_val = "Username has to contain no less than 3 and not more than 20 characters"    
+        elif " " in username:
+            username_error = "Your username cannot contain any spaces."
+            #error = True
+            #return redirect('/signup', username_error=username_error, password_val=password_val)
+        
+        if password == "":
+            password_val = "Empty field"
+        elif len(password) < 3 or len(password) > 20:
+            password_val = "Password cannot contain no less than 3 and no more than 20 characters"
+        elif " " in password:
+            password_val = "Your password cannot contain any spaces."
+            #return redirect('/signup')
+
+        if verify == "":
+            verify_val = "Empty field"
+        elif verify != password:
+            verify_val = "Issue with verification. Try again"
+            #return redirect('/signup')
+        
+        
+        if not username_val and not password_val and not verify_val:
+            new_user = User(username, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['username'] = username
+            return redirect('/newpost')
+        else:
+            username_dup = "Username exist already"
+        return render_template('signup.html',username=username,
+        username_val=username_val, password_val=password_val, verify_val=verify_val)
+
+
+
+
 @app.route("/", methods=['POST', 'GET']) 
 def index():
     users= User.query.all()
     return render_template('index.html', users=users)
-
-
 
 
 
@@ -97,6 +149,8 @@ def new_post():
         return render_template('newpost.html',title_error=title_error, body_error=body_error, title=title, body=body)
     else:
         return render_template('newpost.html')
+
+
 
 
 if __name__ == '__main__':
