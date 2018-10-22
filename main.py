@@ -33,6 +33,13 @@ class User(db.Model):
         self.username = username
         self.password = password
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login','index','singleUser','signup','newpost','list_blogs']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+
 
 @app.route('/login', methods=['POST','GET'])
 def login():
@@ -47,15 +54,14 @@ def login():
         if not password:
             password_error = 'Invalid Password'
 
-        if not username_error and not password_error:
+        if user and user.password == password:
             session['username'] = username
-            flash('Logged in')
             return redirect('/newpost')
-        
+        else:
+            password_error = 'Invalid Password'
         return render_template('login.html', username_error=username_error, password_error=password_error)
-    else:
-        return render_template('login.html')
-
+    
+    return render_template('login.html')
 
 @app.route('/signup', methods=['POST','GET'])
 def signup():
@@ -66,46 +72,49 @@ def signup():
         username_val = ""  
         password_val = ""  
         verify_val = ""
-        username_dup = ""
+        user_exist = ""
         existing_user = User.query.filter_by(username=username).first()
 
-        #error = False
-
+        if existing_user:
+            username_val = "Duplicate User"
+            
         if username == "":
             username_val = "Empty field"
+            
         elif len(username) < 3 or len(username) > 20:
             username_val = "Username has to contain no less than 3 and not more than 20 characters"    
+                
         elif " " in username:
             username_error = "Your username cannot contain any spaces."
-            #error = True
-            #return redirect('/signup', username_error=username_error, password_val=password_val)
         
         if password == "":
             password_val = "Empty field"
+            
         elif len(password) < 3 or len(password) > 20:
             password_val = "Password cannot contain no less than 3 and no more than 20 characters"
+            
         elif " " in password:
             password_val = "Your password cannot contain any spaces."
-            #return redirect('/signup')
+            
 
         if verify == "":
             verify_val = "Empty field"
+            
         elif verify != password:
-            verify_val = "Issue with verification. Try again"
-            #return redirect('/signup')
+            verify_val = "Issue with verification. Try again" 
         
-        
-        if not username_val and not password_val and not verify_val:
+        if not existing_user and not username_val and not password_val and not verify_val:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
             return redirect('/newpost')
         else:
-            username_dup = "Username exist already"
-        return render_template('signup.html',username=username,
-        username_val=username_val, password_val=password_val, verify_val=verify_val)
+            return render_template('signup.html',username=username,
+            username_val=username_val, password_val=password_val, verify_val=verify_val)
+    return render_template('signup.html')
 
+        
 
 
 
@@ -117,15 +126,15 @@ def index():
 
 
 
-@app.route('/blog', methods=['GET'])
-def blog():
+@app.route('/list_blogs', methods=['GET'])
+def list_blogs():
     if request.args:
         id = request.args.get('id')
         query = Blog.query.get(id)
-        return render_template('singlepost.html', post=query)
+        return render_template('singleUser.html', post=query)
     else:
         query = Blog.query.all()    
-        return render_template('blog.html', blog=query)
+        return render_template('list_blogs.html', blog=query)
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
@@ -144,13 +153,16 @@ def new_post():
             new = Blog(title,body,owner)
             db.session.add(new)
             db.session.commit()
-            return redirect('./blog?id='+ str(new.id))
+            return redirect('./list_blogs?id='+ str(new.id))
     
-        return render_template('newpost.html',title_error=title_error, body_error=body_error, title=title, body=body)
+        return render_template('newpost.html',title_error=title_error, body_error=body_error, title=title, body=body, owner=owner)
     else:
         return render_template('newpost.html')
 
-
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('/')
 
 
 if __name__ == '__main__':
