@@ -120,8 +120,10 @@ def signup():
 
 @app.route("/", methods=['POST', 'GET']) 
 def index():
-    users= User.query.all()
-    return render_template('index.html', users=users)
+        users= User.query.all()
+        return render_template('index.html', users=users)
+
+
 
 
 
@@ -131,7 +133,7 @@ def list_blogs():
     if request.args:
         id = request.args.get('id')
         query = Blog.query.get(id)
-        return render_template('singleUser.html', post=query)
+        return render_template('entry.html', post=query)
     else:
         query = Blog.query.all()    
         return render_template('list_blogs.html', blog=query)
