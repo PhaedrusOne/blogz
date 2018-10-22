@@ -53,7 +53,6 @@ def login():
             username_error = 'Invalid Username'
         if not password:
             password_error = 'Invalid Password'
-
         if user and user.password == password:
             session['username'] = username
             return redirect('/newpost')
@@ -124,7 +123,12 @@ def index():
         return render_template('index.html', users=users)
 
 
-
+@app.route('/singleUser', methods=['POST','GET'])
+def singleUser():
+    blogs = Blog.query.all()
+    owner = request.args.get('user')
+    blogs = Blog.query.filter_by(owner_id=owner).all()
+    return render_template('singleUser.html', blogs=blogs)
 
 
 

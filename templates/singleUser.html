@@ -6,7 +6,7 @@
   <ul>
       {% for blog in blogs %}
       <h2>
-      <a href='/list_blogs?id={{blog.id}}'></a><p>{{blog.title}}</p>
+      <a href='/list_blogs?id={{blog.id}}'>{{blog.title}}</a>
       </h2>
       <p>{{blog.body}}</p>
       <P>Written By: <a href='/singleUser?user={{blog.owner.id}}'>{{blog.owner.username}}</a></P>
