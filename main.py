@@ -103,8 +103,8 @@ def signup():
             verify_val = "Issue with verification. Try again" 
         
         if not duplicate_user and not username_val and not password_val and not verify_val:
-            new_user = User(username, password)
-            db.session.add(new_user)
+            user = User(username, password)
+            db.session.add(user)
             db.session.commit()
             session['username'] = username
             return redirect('/newpost')
