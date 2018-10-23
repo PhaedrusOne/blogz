@@ -124,7 +124,6 @@ def index():
 @app.route('/singleUser', methods=['POST','GET'])
 def singleUser():
     user = request.args.get('user')
-    blogs = Blog.query.all()
     blogs = Blog.query.filter_by(owner_id=user).all()
     return render_template('singleUser.html', blogs=blogs)
 
