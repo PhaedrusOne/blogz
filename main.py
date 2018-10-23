@@ -22,7 +22,6 @@ class Blog(db.Model):
         self.owner = owner
 
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
@@ -38,7 +37,6 @@ def require_login():
     allowed_routes = ['login','index','singleUser','signup','newpost','list_blogs']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
-
 
 
 @app.route('/login', methods=['POST','GET'])
@@ -95,7 +93,6 @@ def signup():
         elif " " in password:
             password_val = "Your password cannot contain any spaces."
             
-
         if verify == "":
             verify_val = "Empty field"
             
@@ -114,7 +111,6 @@ def signup():
     return render_template('signup.html')
       
 
-
 @app.route('/', methods=['POST', 'GET']) 
 def index():
         users= User.query.all()
@@ -126,7 +122,6 @@ def singleUser():
     user = request.args.get('user')
     blogs = Blog.query.filter_by(owner_id=user).all()
     return render_template('singleUser.html', blogs=blogs)
-
 
 
 @app.route('/list_blogs', methods=['GET'])
