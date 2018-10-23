@@ -142,7 +142,7 @@ def list_blogs():
 
 
 @app.route('/newpost', methods=['POST', 'GET'])
-def new_post():
+def newpost():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
