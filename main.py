@@ -115,7 +115,7 @@ def signup():
       
 
 
-@app.route("/", methods=['POST', 'GET']) 
+@app.route('/', methods=['POST', 'GET']) 
 def index():
         users= User.query.all()
         return render_template('index.html', users=users)
