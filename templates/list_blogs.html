@@ -5,7 +5,7 @@
 
     {% for entry in blog %}
         <h2>
-        <a href='/list_blogs?id={{entry.id}}'><p>{{entry.title}}</p></a>
+        <a href='/list_blogs?id={{entry.id}}'>{{entry.title}}</a>
         </h2>
         <p>{{entry.body}}</p>
         <P>Written By: <a href='/singleUser?user={{entry.owner.id}}'>{{entry.owner.username}}</a></P>         
