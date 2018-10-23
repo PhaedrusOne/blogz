@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, flash
+from flask import Flask, request, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -55,7 +55,7 @@ def login():
             password_error = 'Invalid Password'
         if user and user.password == password:
             session['username'] = username
-            return redirect('/newpost')
+            return redirect('/list_blogs')
         else:
             password_error = 'Invalid Password'
         return render_template('login.html', username_error=username_error, password_error=password_error)
@@ -126,8 +126,8 @@ def index():
 @app.route('/singleUser', methods=['POST','GET'])
 def singleUser():
     blogs = Blog.query.all()
-    owner = request.args.get('user')
-    blogs = Blog.query.filter_by(owner_id=owner).all()
+    user = request.args.get('user')
+    blogs = Blog.query.filter_by(owner_id=user).all()
     return render_template('singleUser.html', blogs=blogs)
 
 

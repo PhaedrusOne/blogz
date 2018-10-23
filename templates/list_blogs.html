@@ -8,7 +8,7 @@
         <a href='/list_blogs?id={{entry.id}}'><p>{{entry.title}}</p></a>
         </h2>
         <p>{{entry.body}}</p>
-        <P>Written By: <a href="/list_blogs?id={{entry.id}}">{{entry.owner.username}}</a></P>         
+        <P>Written By: <a href='/singleUser?user={{entry.owner.id}}'>{{entry.owner.username}}</a></P>         
     {% endfor %}
               
 {% endblock %}
