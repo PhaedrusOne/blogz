@@ -72,9 +72,9 @@ def signup():
         password_val = ""  
         verify_val = ""
         user_exist = ""
-        existing_user = User.query.filter_by(username=username).first()
+        duplicate_user = User.query.filter_by(username=username).first()
 
-        if existing_user:
+        if duplicate_user:
             username_val = "Duplicate User"
             
         if username == "":
@@ -102,7 +102,7 @@ def signup():
         elif verify != password:
             verify_val = "Issue with verification. Try again" 
         
-        if not existing_user and not username_val and not password_val and not verify_val:
+        if not duplicate_user and not username_val and not password_val and not verify_val:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
@@ -112,9 +112,7 @@ def signup():
             return render_template('signup.html',username=username,
             username_val=username_val, password_val=password_val, verify_val=verify_val)
     return render_template('signup.html')
-
-        
-
+      
 
 
 @app.route("/", methods=['POST', 'GET']) 
@@ -159,7 +157,7 @@ def new_post():
             new = Blog(title,body,owner)
             db.session.add(new)
             db.session.commit()
-            return redirect('./list_blogs?id='+ str(new.id))
+            return redirect('/list_blogs?id='+ str(new.id))
     
         return render_template('newpost.html',title_error=title_error, body_error=body_error, title=title, body=body, owner=owner)
     else:
