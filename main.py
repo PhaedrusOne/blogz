@@ -109,8 +109,8 @@ def signup():
             session['username'] = username
             return redirect('/newpost')
         else:
-            return render_template('signup.html',username=username,
-            username_val=username_val, password_val=password_val, verify_val=verify_val)
+            return render_template('signup.html',
+            username_val=username_val, password_val=password_val, verify_val=verify_val, username=username)
     return render_template('signup.html')
       
 
