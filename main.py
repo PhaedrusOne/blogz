@@ -47,6 +47,7 @@ def login():
         username_error = ''
         password_error= ''
         user = User.query.filter_by(username=username).first()
+    
         if not username:
             username_error = 'Invalid Username'
         if not password:
@@ -69,11 +70,10 @@ def signup():
         username_val = ""  
         password_val = ""  
         verify_val = ""
-        user_exist = ""
         duplicate_user = User.query.filter_by(username=username).first()
 
         if duplicate_user:
-            username_val = "Duplicate User"
+            username_val = "Duplicate Usename"
             
         if username == "":
             username_val = "Empty field"
@@ -82,7 +82,7 @@ def signup():
             username_val = "Username has to contain no less than 3 and not more than 20 characters"    
                 
         elif " " in username:
-            username_error = "Your username cannot contain any spaces."
+            username_val = "Your username cannot contain any spaces."
         
         if password == "":
             password_val = "Empty field"
